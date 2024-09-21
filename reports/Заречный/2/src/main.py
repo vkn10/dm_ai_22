@@ -2,10 +2,7 @@ import torch
 from torch import nn, optim
 import matplotlib.pyplot as plt
 import numpy as np
-
-
 from sklearn.manifold import TSNE
-
 
 class AE(nn.Module):
 
@@ -13,21 +10,15 @@ class AE(nn.Module):
         super().__init__()
         self.encoder = nn.Sequential(
             nn.Linear(7, 21),
-            # nn.LeakyReLU(.01),
             nn.ReLU(),
-
             nn.Linear(21, p),
-            # nn.LeakyReLU(.01),
-
         )
 
         self.decoder = nn.Sequential(
             nn.Linear(p, 21),
             nn.ReLU(),
-
             nn.Linear(21, 7),
             nn.ReLU(),
-
         )
 
     def forward(self, x):
@@ -67,7 +58,6 @@ def ae_1(dataset, target):
     enc = ae.encoder(dataset)
     res: np.ndarray = enc.detach().numpy()
 
-
     mask = (target == 1)
     mask = np.concatenate((mask, mask), axis=1)
     data = res[mask]
@@ -85,7 +75,6 @@ def ae_1(dataset, target):
     data = res[mask]
     data = np.reshape(data, (data.size // 2, 2))
     plt.scatter(data[:, 0], data[:, 1], color='b')
-
 
     plt.show()
 
@@ -110,9 +99,7 @@ def ae_2(dataset, target):
 
     for epoch in range(epochs):
         reconstructed = ae(dataset)
-
         loss = loss_f(reconstructed, dataset)
-
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -141,16 +128,12 @@ def ae_2(dataset, target):
     data = np.reshape(data, (data.size // 3, 3))
     ax.scatter(data[:, 0], data[:, 1], data[:, 2], color='b')
 
-
     plt.show()
-
-
 
 
 def tsne_1(dataset, target):
     tsne = TSNE(2, perplexity=100,)
     res = tsne.fit_transform(dataset)
-
 
     mask = (target  == 1)
     mask = np.concatenate((mask, mask), axis=1)
@@ -171,7 +154,6 @@ def tsne_1(dataset, target):
     plt.scatter(data[:, 0], data[:, 1], color='b')
 
     plt.show()
-
 
 
 def tsne_2(dataset, target):
@@ -197,16 +179,10 @@ def tsne_2(dataset, target):
     data = np.reshape(data, (data.size // 3, 3))
     ax.scatter(data[:, 0], data[:, 1], data[:, 2], color='b')
 
-
-
     plt.show()
 
 
-
-
 def main():
-
-
 
     data = np.genfromtxt('Wholesale customers data.csv', skip_header=True, delimiter=',', dtype=None)
     target = data[:, 1:2]
@@ -215,13 +191,8 @@ def main():
     ae_1(dataset, target)
     ae_2(dataset, target)
 
-
     tsne_1(dataset, target)
     tsne_2(dataset, target)
-
-
-
-
 
 
 if __name__ == "__main__":
