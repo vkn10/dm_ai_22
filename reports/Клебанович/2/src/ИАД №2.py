@@ -6,7 +6,7 @@ from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-
+from sklearn.decomposition import KernelPCA
 
 def load_data(file_path):
     dataset = pd.read_csv(file_path).dropna()
@@ -90,11 +90,15 @@ def visualize(data, labels, components, title):
         plt.show()
 
 
-def apply_tsne(data, labels, components, perplexity=30):
-    tsne = TSNE(n_components=components, perplexity=perplexity, init='pca', random_state=0)
+def apply_tsne(data, labels, components, perplexity=100):
+    tsne = TSNE(n_components=components, perplexity=perplexity, init='random', random_state=0)
     tsne_transformed = tsne.fit_transform(data)
     visualize(tsne_transformed, labels, components, title=f't-SNE: {components} компоненты')
 
+def apply_kernel_pca(data, labels, components, kernel='linear'):
+    kpca = KernelPCA(n_components=components, kernel=kernel)
+    kpca_transformed = kpca.fit_transform(data)
+    visualize(kpca_transformed, labels, components, title=f'KernelPCA: {components} компоненты, kernel={kernel}')
 
 file_path = 'D:/7 семестр/ИАД лабы/ИАД лаба №1/hcvdat0.csv'
 features, labels = load_data(file_path)
@@ -114,3 +118,7 @@ visualize(encoded_3d, labels, 3, title='Autoencoder: 3 компоненты')
 
 apply_tsne(features, labels, components=2, perplexity=40)
 apply_tsne(features, labels, components=3, perplexity=40)
+
+# Применение KernelPCA и визуализация для 2-х и 3-х компонент
+apply_kernel_pca(features, labels, components=2, kernel='linear')
+apply_kernel_pca(features, labels, components=3, kernel='linear')
